@@ -1,4 +1,5 @@
 const http = require("http");
+const headers = require("./headers");
 const Room = require("./models/room");
 const mongoose = require("mongoose");
 
@@ -13,21 +14,30 @@ mongoose
   });
 
 // create
-Room.create({
-  name: "海景套房-module",
-  price: 200,
-  rating: 4.5,
-})
-  .then(() => {
-    console.log("create success");
-  })
-  .catch((err) => {
-    console.log(err.errors);
-  });
+// Room.create({
+//   name: "海景套房-module",
+//   price: 200,
+//   rating: 4.5,
+// })
+//   .then(() => {
+//     console.log("create success");
+//   })
+//   .catch((err) => {
+//     console.log(err.errors);
+//   });
 
-const requestListener = (req, res) => {
-  console.log(req.url);
-  res.end();
+const requestListener = async (req, res) => {
+  if (req.url == "/rooms" && req.method == "GET") {
+    const rooms = await Room.find();
+    res.writeHead(200, headers);
+    res.write(
+      JSON.stringify({
+        status: "success",
+        rooms,
+      })
+    );
+    res.end();
+  }
 };
 
 const server = http.createServer(requestListener);
