@@ -13,20 +13,14 @@ mongoose
     console.log(err);
   });
 
-// create
-// Room.create({
-//   name: "海景套房-module",
-//   price: 200,
-//   rating: 4.5,
-// })
-//   .then(() => {
-//     console.log("create success");
-//   })
-//   .catch((err) => {
-//     console.log(err.errors);
-//   });
-
 const requestListener = async (req, res) => {
+  // body parser
+  let body = "";
+  req.on("data", (chunk) => {
+    // console.log(chunk);
+    body += chunk.toString();
+  });
+
   if (req.url == "/rooms" && req.method == "GET") {
     const rooms = await Room.find();
     res.writeHead(200, headers);
@@ -37,6 +31,40 @@ const requestListener = async (req, res) => {
       })
     );
     res.end();
+  } else if (req.url == "/rooms" && req.method == "POST") {
+    req.on("end", async () => {
+      try {
+        const data = JSON.parse(body);
+        // console.log(data);
+
+        // create
+        const newRoom = await Room.create({
+          name: data.name,
+          price: data.price,
+          rating: data.rating,
+        });
+
+        res.writeHead(200, headers);
+        res.write(
+          JSON.stringify({
+            status: "success",
+            rooms: newRoom,
+          })
+        );
+        res.end();
+      } catch (error) {
+        res.writeHead(400, headers);
+        res.write(
+          JSON.stringify({
+            status: "false",
+            message: "欄位不正確",
+            error: error,
+          })
+        );
+        // console.log(error);
+        res.end();
+      }
+    });
   }
 };
 
