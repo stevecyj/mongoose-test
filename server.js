@@ -1,4 +1,5 @@
 const http = require("http");
+const Room = require("./models/room");
 const mongoose = require("mongoose");
 
 // connect db
@@ -11,25 +12,9 @@ mongoose
     console.log(err);
   });
 
-// schema，開頭小寫，強制加上s
-const roomSchema = new mongoose.Schema(
-  {
-    name: String,
-    price: {
-      type: Number,
-      required: [true, "price is required"],
-    },
-    rating: Number,
-  },
-  { versionKey: false, timestamps: true }
-);
-
-// model
-const Room = mongoose.model("Room", roomSchema);
-
 // create
 Room.create({
-  name: "海景套房6",
+  name: "海景套房-module",
   price: 200,
   rating: 4.5,
 })
@@ -39,23 +24,6 @@ Room.create({
   .catch((err) => {
     console.log(err.errors);
   });
-
-// 實體
-// const testRoom = new Room({
-//   name: "海景套房4",
-//   price: 200,
-//   rating: 4.5,
-// });
-
-// // 新增資料
-// testRoom
-//   .save()
-//   .then(() => {
-//     console.log("新增資料成功");
-//   })
-//   .catch((err) => {
-//     console.log(err.errors.price.properties.message);
-//   });
 
 const requestListener = (req, res) => {
   console.log(req.url);
