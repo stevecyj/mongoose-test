@@ -11,7 +11,7 @@ mongoose
     console.log(err);
   });
 
-// schema
+// schema，開頭小寫，強制加上s
 const roomSchema = new mongoose.Schema(
   {
     name: String,
@@ -21,28 +21,41 @@ const roomSchema = new mongoose.Schema(
     },
     rating: Number,
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 // model
 const Room = mongoose.model("Room", roomSchema);
 
-// 實體
-const testRoom = new Room({
-  name: "海景套房4",
+// create
+Room.create({
+  name: "海景套房6",
   price: 200,
   rating: 4.5,
-});
-
-// 新增資料
-testRoom
-  .save()
+})
   .then(() => {
-    console.log("新增資料成功");
+    console.log("create success");
   })
   .catch((err) => {
-    console.log(err.errors.price.properties.message);
+    console.log(err.errors);
   });
+
+// 實體
+// const testRoom = new Room({
+//   name: "海景套房4",
+//   price: 200,
+//   rating: 4.5,
+// });
+
+// // 新增資料
+// testRoom
+//   .save()
+//   .then(() => {
+//     console.log("新增資料成功");
+//   })
+//   .catch((err) => {
+//     console.log(err.errors.price.properties.message);
+//   });
 
 const requestListener = (req, res) => {
   console.log(req.url);
