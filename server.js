@@ -1,11 +1,21 @@
 const http = require("http");
 const headers = require("./headers");
 const Room = require("./models/room");
+const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+
+dotenv.config({ path: "./config.env" });
+
+// console.log(process.env.PORT);
+
+const DB = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
 
 // connect db
 mongoose
-  .connect("mongodb://192.168.0.100:27017/hotel")
+  .connect(DB)
   .then(() => {
     console.log("connected to db");
   })
@@ -86,4 +96,4 @@ const requestListener = async (req, res) => {
 };
 
 const server = http.createServer(requestListener);
-server.listen(3005);
+server.listen(process.env.PORT);
